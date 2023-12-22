@@ -39,17 +39,22 @@ type Networks struct {
 	// Router indicates whether to use an existing router or create a new one.
 	// +optional
 	Router *Router `json:"router,omitempty"`
-	// Worker is a CIDRs of a worker subnet (private) to create (used for the VMs).
-	// Deprecated - use `workers` instead.
-	Worker string `json:"worker"`
 	// Workers is a CIDRs of a worker subnet (private) to create (used for the VMs).
 	Workers string `json:"workers"`
+	// Additional contains information about additional pre-existing networks to connect to the VMs.
+	// +optional
+	Additional *AdditionalNetwork `json:"additional,omitempty"`
 	// ID is the ID of an existing private network.
 	// +optional
 	ID *string `json:"id,omitempty"`
 	// ShareNetwork holds information about the share network (used for shared file systems like NFS)
 	// +optional
 	ShareNetwork *ShareNetwork `json:"shareNetwork,omitempty"`
+}
+
+type AdditionalNetwork struct {
+	SubnetID  string `json:"subnetID"`
+	NetworkID string `json:"networkID"`
 }
 
 // Router indicates whether to use an existing router or create a new one.

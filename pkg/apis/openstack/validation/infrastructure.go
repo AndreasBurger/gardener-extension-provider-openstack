@@ -43,16 +43,11 @@ func ValidateInfrastructureConfig(infra *api.InfrastructureConfig, nodesCIDR *st
 	}
 
 	networksPath := fldPath.Child("networks")
-	if len(infra.Networks.Worker) == 0 && len(infra.Networks.Workers) == 0 {
+	if len(infra.Networks.Workers) == 0 {
 		allErrs = append(allErrs, field.Required(networksPath.Child("workers"), "must specify the network range for the worker network"))
 	}
 
 	var workerCIDR cidrvalidation.CIDR
-	if infra.Networks.Worker != "" {
-		workerCIDR = cidrvalidation.NewCIDR(infra.Networks.Worker, networksPath.Child("worker"))
-		allErrs = append(allErrs, cidrvalidation.ValidateCIDRParse(workerCIDR)...)
-		allErrs = append(allErrs, cidrvalidation.ValidateCIDRIsCanonical(networksPath.Child("worker"), infra.Networks.Worker)...)
-	}
 	if infra.Networks.Workers != "" {
 		workerCIDR = cidrvalidation.NewCIDR(infra.Networks.Workers, networksPath.Child("workers"))
 		allErrs = append(allErrs, cidrvalidation.ValidateCIDRParse(workerCIDR)...)

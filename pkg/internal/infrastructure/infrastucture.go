@@ -145,10 +145,6 @@ func WorkersCIDR(config *openstack.InfrastructureConfig) string {
 	}
 
 	workersCIDR := config.Networks.Workers
-	// Backwards compatibility - remove this code in a future version.
-	if workersCIDR == "" {
-		workersCIDR = config.Networks.Worker
-	}
 
 	return workersCIDR
 }

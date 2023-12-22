@@ -251,10 +251,6 @@ func (c *FlowContext) ensureSubnet(ctx context.Context) error {
 
 	networkID := *c.state.Get(IdentifierNetwork)
 	workersCIDR := c.config.Networks.Workers
-	// Backwards compatibility - remove this code in a future version.
-	if workersCIDR == "" {
-		workersCIDR = c.config.Networks.Worker
-	}
 	desired := &subnets.Subnet{
 		Name:           c.namespace,
 		NetworkID:      networkID,
