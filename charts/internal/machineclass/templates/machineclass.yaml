@@ -38,7 +38,7 @@ credentialsSecretRef:
   name: {{ $machineClass.credentialsSecretRef.name }}
   namespace: {{ $machineClass.credentialsSecretRef.namespace }}
 providerSpec:
-  apiVersion: openstack.machine.gardener.cloud/v1alpha1
+  apiVersion: openstack.machine.gardener.cloud/v1alpha2
   kind: MachineProviderConfig
   spec:
     region: {{ $machineClass.region }}
@@ -50,9 +50,14 @@ providerSpec:
 {{- else }}
     imageName: {{ $machineClass.imageName }}
 {{- end }}
-    networkID: {{ $machineClass.networkID }}
-    subnetID: {{ $machineClass.subnetID }}
-    podNetworkCidr: {{ $machineClass.podNetworkCidr }}
+    network:
+      networkID: {{ $machineClass.network.networkID }}
+      subnetID: {{ $machineClass.network.subnetID }}
+      cidr: {{ $machineClass.network.cidr }}
+{{- if $machineClass.additionalNetworks }}
+    additionalNetworks:
+{{ toYaml $machineClass.additionalNetworks | indent 4 }}
+{{- end }}
 {{- if $machineClass.rootDiskSize }}
     rootDiskSize: {{ $machineClass.rootDiskSize }}
 {{- end }}

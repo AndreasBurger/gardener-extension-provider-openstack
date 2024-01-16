@@ -498,6 +498,54 @@ reconciliation is possible.</p>
 </tr>
 </tbody>
 </table>
+<h3 id="openstack.provider.extensions.gardener.cloud/v1alpha1.AdditionalNetwork">AdditionalNetwork
+</h3>
+<p>
+(<em>Appears on:</em>
+<a href="#openstack.provider.extensions.gardener.cloud/v1alpha1.WorkerConfig">WorkerConfig</a>)
+</p>
+<p>
+</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>networkID</code></br>
+<em>
+string
+</em>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<code>subnetID</code></br>
+<em>
+string
+</em>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<code>cidr</code></br>
+<em>
+string
+</em>
+</td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
 <h3 id="openstack.provider.extensions.gardener.cloud/v1alpha1.CSIManila">CSIManila
 </h3>
 <p>
@@ -1340,18 +1388,6 @@ Router
 </tr>
 <tr>
 <td>
-<code>worker</code></br>
-<em>
-string
-</em>
-</td>
-<td>
-<p>Worker is a CIDRs of a worker subnet (private) to create (used for the VMs).
-Deprecated - use <code>workers</code> instead.</p>
-</td>
-</tr>
-<tr>
-<td>
 <code>workers</code></br>
 <em>
 string
@@ -2001,6 +2037,19 @@ OpenStack provider extension will try to create a new server group for instances
 </td>
 <td>
 <p>MachineLabels define key value pairs to add to machines.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>additionalNetworks</code></br>
+<em>
+<a href="#openstack.provider.extensions.gardener.cloud/v1alpha1.AdditionalNetwork">
+[]AdditionalNetwork
+</a>
+</em>
+</td>
+<td>
+<p>Additional contains information about additional networks to connect to the VM.</p>
 </td>
 </tr>
 </tbody>

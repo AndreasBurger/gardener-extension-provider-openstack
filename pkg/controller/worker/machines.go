@@ -148,13 +148,24 @@ func (w *workerDelegate) generateMachineConfig() error {
 		for zoneIndex, zone := range pool.Zones {
 			zoneIdx := int32(zoneIndex)
 			machineClassSpec := map[string]interface{}{
-				"region":           w.worker.Spec.Region,
 				"availabilityZone": zone,
-				"machineType":      pool.MachineType,
-				"keyName":          infrastructureStatus.Node.KeyName,
-				"networkID":        infrastructureStatus.Networks.ID,
-				"podNetworkCidr":   extensionscontroller.GetPodNetwork(w.cluster),
-				"securityGroups":   []string{nodesSecurityGroup.Name},
+				"credentialsSecretRef": map[string]interface{}{
+					"name":      w.worker.Spec.SecretRef.Name,
+					"namespace": w.worker.Spec.SecretRef.Namespace,
+				},
+				"keyName":     infrastructureStatus.Node.KeyName,
+				"machineType": pool.MachineType,
+				"network": map[string]interface{}{
+					"networkID": infrastructureStatus.Networks.ID,
+					"subnetID":  subnet.ID,
+					"cidr":      extensionscontroller.GetPodNetwork(w.cluster),
+				},
+				"networkID": infrastructureStatus.Networks.ID,
+				"region":    w.worker.Spec.Region,
+				"secret": map[string]interface{}{
+					"cloudConfig": string(pool.UserData),
+				},
+				"securityGroups": []string{nodesSecurityGroup.Name},
 				"tags": utils.MergeStringMaps(
 					NormalizeLabelsForMachineClass(pool.Labels),
 					NormalizeLabelsForMachineClass(machineLabels),
@@ -163,16 +174,15 @@ func (w *workerDelegate) generateMachineConfig() error {
 						"kubernetes.io-role-node":                                   "1",
 					},
 				),
-				"credentialsSecretRef": map[string]interface{}{
-					"name":      w.worker.Spec.SecretRef.Name,
-					"namespace": w.worker.Spec.SecretRef.Namespace,
-				},
-				"secret": map[string]interface{}{
-					"cloudConfig": string(pool.UserData),
-				},
 			}
 
-			machineClassSpec["subnetID"] = subnet.ID
+			if workerConfig.AdditionalNetworks != nil {
+				additionalNetworks := make([]map[string]interface{}, 0, len(workerConfig.AdditionalNetworks))
+				for _, cfg := range workerConfig.AdditionalNetworks {
+					additionalNetworks = append(additionalNetworks, map[string]interface{}{"networkID": cfg.NetworkID, "subnetID": cfg.SubnetID, "cidr": cfg.Cidr})
+				}
+				machineClassSpec["additionalNetworks"] = additionalNetworks
+			}
 
 			if volumeSize > 0 {
 				machineClassSpec["rootDiskSize"] = volumeSize

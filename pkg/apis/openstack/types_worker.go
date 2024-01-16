@@ -66,16 +66,22 @@ type ServerGroupDependency struct {
 // WorkerConfig contains configuration data for a worker pool.
 type WorkerConfig struct {
 	metav1.TypeMeta
-
 	// NodeTemplate contains resource information of the machine which is used by Cluster Autoscaler to generate
 	// nodeTemplate during scaling a nodeGroup from zero.
 	NodeTemplate *extensionsv1alpha1.NodeTemplate
 	// ServerGroup contains configuration data for the worker pool's server group. If this object is present,
 	// OpenStack provider extension will try to create a new server group for instances of this worker pool.
 	ServerGroup *ServerGroup
-
 	// MachineLabels define key value pairs to add to machines.
 	MachineLabels []MachineLabel
+	// Additional contains information about additional pre-existing networks to connect to the VM.
+	AdditionalNetworks []AdditionalNetwork
+}
+
+type AdditionalNetwork struct {
+	NetworkID string
+	SubnetID  string
+	Cidr      string
 }
 
 // MachineLabel define key value pair to label machines.
